@@ -2,14 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\PostResource;
+use App\Models\User;
 use App\Models\Posts;
+use App\Events\UserCreated;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use App\Repository\PostRepository;
 use Illuminate\Support\Facades\DB;
+use App\Http\Resources\PostResource;
 use App\Http\Requests\StorePostsRequest;
 use App\Http\Requests\UpdatePostsRequest;
-use App\Repository\PostRepository;
 
 class PostsController extends Controller
 {
@@ -20,6 +22,7 @@ class PostsController extends Controller
     public function index(Request $request)
     {
         $posts = Posts::query()->paginate($request->page_size??3);
+        event(new UserCreated(User::factory()->make()));
         return PostResource::collection($posts);
     }
 
@@ -52,11 +55,11 @@ class PostsController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\UpdatePostsRequest  $request
+     * @param 
      * @param  \App\Models\Posts  $posts
      * @return 
      */
-    public function update(UpdatePostsRequest $request, Posts $post,PostRepository $postRepository)
+    public function update(Request $request, Posts $post,PostRepository $postRepository)
     {
         $updated = $postRepository->update($post, $request->only([
             'title','body'

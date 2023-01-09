@@ -1,6 +1,9 @@
 <?php
 
+use App\Listeners\SendEmailWelcome;
 use Illuminate\Support\Facades\Route;
+
+use function Termwind\render;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,4 +18,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
+});
+Route::get('/s', function () {
+ return (new SendEmailWelcome());
 });
